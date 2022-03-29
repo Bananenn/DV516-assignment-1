@@ -76,7 +76,7 @@ yRange = np.arange(-1.0, 1.4, stepSize)
 for x in xRange:
     print(f"Progress: {round(((1+x)/2.4)*100)}%")
     for y in yRange:
-        if predictValue((x-stepSize/2,y-stepSize/2),1) == 0:
+        if predictValue((x-stepSize/2,y-stepSize/2),3) == 0:
             plt.gca().add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='red', alpha=0.5))
             
         else:
