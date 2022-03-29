@@ -31,13 +31,21 @@ plt.plot(zlst[0][0],zlst[0][1], 'yo')
 plt.plot(zlst[1][0],zlst[1][1], 'go')
 plt.plot(zlst[2][0],zlst[2][1], 'co')
 
+#TODO verify
+#premake array instead of reading file to make it quicker, This is only dun once
+points = []
+for index, row in chips.iterrows():
+    point = (row[0], row[1], row[2])
+    points.append(point)
+
+
 #Peredict value function based on KNN, TODO this needs to be more efficient
 def predictValue(z,k):
     distanceList = []
-    for index, row in chips.iterrows():
+    for x,y,ok in points:
         #d=√((x_2-x_1)²+(y_2-y_1)²)
-        dis = sqrt( pow((z[0] - row[0]),2) + pow((z[1] - row[1]),2) )
-        currentPoint = ((row[0], row[1], row[2]),dis)
+        dis = sqrt( pow((z[0] - x),2) + pow((z[1] - y),2) )
+        currentPoint = ((x, y, ok),dis)
         distanceList.append(currentPoint)
 
         #[x1, x2] - 
