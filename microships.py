@@ -5,6 +5,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+fig, ([raw, k1plt], [k3plt, k5plt]) = plt.subplots(2,2)
+fig.suptitle('Plots showing K-NN')
+raw.set_title('Original data')
+k1plt.set_title('K = 1, Training errors = 0')
+k3plt.set_title('K = 3, Training errors = 7')
+k5plt.set_title('K = 5, Training errors = 10')
 
 # -- (1) Load the data
 PATH = "microchips.csv"
@@ -28,9 +34,15 @@ for index, row in chips.iterrows():
 # - Print all points to make the plot make sense
 for x,y,ok in points:
     if ok == 0:
-        plt.plot(x, y, 'r*')
+        raw.plot(x, y, 'r*')
+        k1plt.plot(x, y, 'r*')
+        k3plt.plot(x, y, 'r*')
+        k5plt.plot(x, y, 'r*')
     else:
-        plt.plot(x, y, 'bx')
+        raw.plot(x, y, 'bx')
+        k1plt.plot(x, y, 'bx')
+        k3plt.plot(x, y, 'bx')
+        k5plt.plot(x, y, 'bx')
     
 # - Print the spots to mesure from
 plt.plot(zlst[0][0],zlst[0][1], 'yo')
@@ -69,7 +81,7 @@ def perdictForPredefPoints():
 
 #perdictForPredefPoints()
 
-def makeboundryPlot(k):
+def makeboundryPlot(plot,k):
     # X and Y ranges from -1 to 1.4 found to be good size
     stepSize = 0.024 # want 100 steps 2.4/100 = 0.024
     xRange = np.arange(-1.0, 1.4, stepSize)
@@ -79,10 +91,12 @@ def makeboundryPlot(k):
         print(f"Progress: {round(((1+x)/2.4)*100)}%")
         for y in yRange:
             if predictValue((x-stepSize/2,y-stepSize/2),k) == 0:
-                plt.gca().add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='red', alpha=0.5))
-                
+                plot.add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='red', alpha=0.5))
             else:
-                plt.gca().add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='blue', alpha=0.5))
+                plot.add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='blue', alpha=0.5))
 
-makeboundryPlot(3)
+makeboundryPlot(k1plt,1)
+makeboundryPlot(k3plt,3)
+makeboundryPlot(k5plt,5)
+
 plt.show()
