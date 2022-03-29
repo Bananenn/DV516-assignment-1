@@ -42,3 +42,5 @@ def predictValue(z,k):
 for point in zlst:
     for k in klst:
         print(f"{predictValue(point, k)} is the predicted value for {point} with K = {k}")
+
+# !!! Still 1.3 togo
