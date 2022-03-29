@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 # -- (1) Load the data
 PATH = "microchips.csv"
 chips = pd.read_csv(PATH)
@@ -19,24 +20,22 @@ zlst = [(-0.3, 1.0), (-0.5, -0.1), (0.6, 0.0)]
 # my list will look something like [((x,y,ok),distance),((x,y,ok),distance)]
 distanceList = []
 
-#TODO just for resting
+# - premake array instead of reading file to make it quicker, This is only dun once
+points = []
 for index, row in chips.iterrows():
-    if row[2] == 0:
-        plt.plot(row[0], row[1], 'r*')
+    points.append((row[0], row[1], row[2]))
+
+# - Print all points to make the plot make sense
+for x,y,ok in points:
+    if ok == 0:
+        plt.plot(x, y, 'r*')
     else:
-        plt.plot(row[0], row[1], 'bx')
+        plt.plot(x, y, 'bx')
     
-#TODO also temp plot Z
+# - Print the spots to mesure from
 plt.plot(zlst[0][0],zlst[0][1], 'yo')
 plt.plot(zlst[1][0],zlst[1][1], 'go')
 plt.plot(zlst[2][0],zlst[2][1], 'co')
-
-#TODO verify
-#premake array instead of reading file to make it quicker, This is only dun once
-points = []
-for index, row in chips.iterrows():
-    point = (row[0], row[1], row[2])
-    points.append(point)
 
 
 #Peredict value function based on KNN, TODO this needs to be more efficient
@@ -45,10 +44,7 @@ def predictValue(z,k):
     for x,y,ok in points:
         #d=√((x_2-x_1)²+(y_2-y_1)²)
         dis = sqrt( pow((z[0] - x),2) + pow((z[1] - y),2) )
-        currentPoint = ((x, y, ok),dis)
-        distanceList.append(currentPoint)
-
-        #[x1, x2] - 
+        distanceList.append(((x, y, ok),dis))
 
     # -- Sort the list in accending order 
     distanceList.sort(key=lambda tup: tup[1])
@@ -73,21 +69,20 @@ def perdictForPredefPoints():
 
 #perdictForPredefPoints()
 
-# Devide X and Y into smaller parts (will try 50)
-#For each part check if it should be 1 or 0 color cordinate
+def makeboundryPlot(k):
+    # X and Y ranges from -1 to 1.4 found to be good size
+    stepSize = 0.024 # want 100 steps 2.4/100 = 0.024
+    xRange = np.arange(-1.0, 1.4, stepSize)
+    yRange = np.arange(-1.0, 1.4, stepSize)
 
-# X and Y ranges from -1 to 1
-stepSize = 0.04
-xRange = np.arange(-1.0, 1.4, stepSize)
-yRange = np.arange(-1.0, 1.4, stepSize)
+    for x in xRange:
+        print(f"Progress: {round(((1+x)/2.4)*100)}%")
+        for y in yRange:
+            if predictValue((x-stepSize/2,y-stepSize/2),k) == 0:
+                plt.gca().add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='red', alpha=0.5))
+                
+            else:
+                plt.gca().add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='blue', alpha=0.5))
 
-for x in xRange:
-    print(f"Progress: {round(((1+x)/2.4)*100)}%")
-    for y in yRange:
-        if predictValue((x-stepSize/2,y-stepSize/2),3) == 0:
-            plt.gca().add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='red', alpha=0.5))
-            
-        else:
-            plt.gca().add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='blue', alpha=0.5))
-
+makeboundryPlot(3)
 plt.show()
