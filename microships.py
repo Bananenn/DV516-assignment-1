@@ -1,10 +1,11 @@
-
 from math import sqrt
-from csv import reader
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+#TODO: Recount training errors
+
+# -- 2x2 plot
 fig, ([raw, k1plt], [k3plt, k5plt]) = plt.subplots(2,2)
 fig.suptitle('Plots showing K-NN')
 raw.set_title('Original data')
@@ -16,38 +17,36 @@ k5plt.set_title('K = 5, Training errors = 10')
 PATH = "microchips.csv"
 chips = pd.read_csv(PATH)
 
+# - premake array instead of reading file to make it quicker, This is only dun once
+points = []
+for index, row in chips.iterrows():
+    points.append((row[0], row[1], row[2]))
+
 # -- (2) initialize the value of K
 klst = [1,3,5,7]
 
 # -- (3) Assume we want to classify a datapoint Z
 zlst = [(-0.3, 1.0), (-0.5, -0.1), (0.6, 0.0)]
 
-# -- (4) find the K nearest granne to Z
-# my list will look something like [((x,y,ok),distance),((x,y,ok),distance)]
-distanceList = []
 
-# - premake array instead of reading file to make it quicker, This is only dun once
-points = []
-for index, row in chips.iterrows():
-    points.append((row[0], row[1], row[2]))
 
 # - Print all points to make the plot make sense
 for x,y,ok in points:
     if ok == 0:
         raw.plot(x, y, 'r*')
-        k1plt.plot(x, y, 'r*')
-        k3plt.plot(x, y, 'r*')
-        k5plt.plot(x, y, 'r*')
+        k1plt.plot(x, y, 'r.')
+        k3plt.plot(x, y, 'r.')
+        k5plt.plot(x, y, 'r.')
     else:
-        raw.plot(x, y, 'bx')
-        k1plt.plot(x, y, 'bx')
-        k3plt.plot(x, y, 'bx')
-        k5plt.plot(x, y, 'bx')
+        raw.plot(x, y, 'b.')
+        k1plt.plot(x, y, 'b.')
+        k3plt.plot(x, y, 'b.')
+        k5plt.plot(x, y, 'b.')
     
 # - Print the spots to mesure from
-plt.plot(zlst[0][0],zlst[0][1], 'yo')
-plt.plot(zlst[1][0],zlst[1][1], 'go')
-plt.plot(zlst[2][0],zlst[2][1], 'co')
+raw.plot(zlst[0][0],zlst[0][1], 'yo')
+raw.plot(zlst[1][0],zlst[1][1], 'go')
+raw.plot(zlst[2][0],zlst[2][1], 'co')
 
 
 #Peredict value function based on KNN, TODO this needs to be more efficient
@@ -88,15 +87,31 @@ def makeboundryPlot(plot,k):
     yRange = np.arange(-1.0, 1.4, stepSize)
 
     for x in xRange:
-        print(f"Progress: {round(((1+x)/2.4)*100)}%")
+        progress = round(((1+x)/2.4)*100)
+        if (progress % 10) == 0: print(f"Progress: {progress}%")
         for y in yRange:
             if predictValue((x-stepSize/2,y-stepSize/2),k) == 0:
-                plot.add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='red', alpha=0.5))
+                plot.add_patch(plt.Rectangle((x,y), stepSize, stepSize, fc='red', alpha=0.5))
             else:
-                plot.add_patch(plt.Rectangle((x-stepSize/2,y-stepSize/2), stepSize, stepSize, fc='blue', alpha=0.5))
+                plot.add_patch(plt.Rectangle((x,y), stepSize, stepSize, fc='blue', alpha=0.5))
 
 makeboundryPlot(k1plt,1)
 makeboundryPlot(k3plt,3)
 makeboundryPlot(k5plt,5)
 
+# -- Now I will cpmpute the errors
+# Go to all dots we know and see if they are in correct are area
+def checkErrors(k):
+    errors = 0
+    for x,y,ok in points:
+        #TODO temo K = 5
+        if predictValue((x,y),k) != ok: 
+            errors +=1
+    return errors
+
+k1plt.set_title(f'K = 1, Training errors = {checkErrors(1)}')
+k3plt.set_title(f'K = 3, Training errors = {checkErrors(3)}')
+k5plt.set_title(f'K = 5, Training errors = {checkErrors(5)}')
+
+#TODO add the above to plots
 plt.show()
