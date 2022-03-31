@@ -98,6 +98,7 @@ def predictValue(z,k):
 
 def makeboundryPlot(k):
     # X and Y ranges from -1 to 1.4 found to be good size
+    # More or less same as excercise 1
     stepSize = 50 
     xRange = np.arange(-1000, 1500, stepSize)
     yRange = np.arange(-1000, 1500, stepSize)
@@ -135,6 +136,8 @@ fig.suptitle('perdict values')
 for plot in [p1,p2,p3,p4,p5,p6]:
     rand = random.randint(0,5000)
     img = train[rand]
+    # Inseration for how to plot the images was taken from.
+    # Source: https://stackoverflow.com/questions/37228371/visualize-mnist-dataset-using-opencv-or-matplotlib-pyplot
     pixels = np.array(img)
     pixels = pixels.reshape(28,28)
     plot.set_title(f"This is: {predictValue(getRelCords(img),3)}")
