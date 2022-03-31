@@ -7,7 +7,7 @@ import numpy as np
 # Date: Mars 2022 
 
 # (1) Devide the data into a training set (100) and a test set (100)
-PATH = "polynomial200.csv"
+PATH = "csvFiles/polynomial200.csv"
 chips = pd.read_csv(PATH)
 
 # - premake array instead of reading file to make it quicker, This is only dun once

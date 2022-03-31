@@ -5,6 +5,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# By: André Franzén (af223kr)
+# Course: 2DV516
+# Date: Mars 2022 
+# Alot of sources are used as this task was complicated.
+# They are mentioned in the code
+#Additional sources:
+# https://benmilanko.com/projects/mnist_with_pca/
+# https://www.analyticsvidhya.com/blog/2021/11/pca-on-mnist-dataset/
+# https://www.codingninjas.com/codestudio/library/applying-pca-on-mnist-dataset
 
 # -- The below (How to plot the thing) was learnt from https://benmilanko.com/projects/mnist_with_pca/
 mndata = MNIST('samples/')

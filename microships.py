@@ -13,7 +13,7 @@ fig.suptitle('Plots showing K-NN')
 
 
 # -- (1) Load the data
-PATH = "microchips.csv"
+PATH = "csvFiles/microchips.csv"
 chips = pd.read_csv(PATH)
 
 # - premake array instead of reading file to make it quicker, This is only dun once
