@@ -2,6 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# By: André Franzén (af223kr)
+# Course: 2DV516
+# Date: Mars 2022 
+
 # (1) Devide the data into a training set (100) and a test set (100)
 PATH = "polynomial200.csv"
 chips = pd.read_csv(PATH)
@@ -40,6 +44,7 @@ for x,y in testSet:
 
 
 def findClosestInX(xval, k, set):
+    #This function will return a list of the K closest points in the set from value xval
     pointWithDistance = [] # This will be a list with the point and x distance 
     for point in set:
         pointWithDistance.append((point, abs(point[0]-xval)))
@@ -53,18 +58,16 @@ def findClosestInX(xval, k, set):
             tempList.append(point) #Append Y value
     return tempList
 
-
-# (3) Display a 2 × 3 plot showing regression lines
 stepSize = 0.05
 xRange = np.arange(0, 25, stepSize)
-
 # For each value in xRange take the k datapoint closest and compute Y value 
 def plotRegression(plot, k):
+    #This function will plot the regression line on plot with k value
     cords = []
     for xval in xRange:
-        #Go through every data point find the k closest values and grab te Y value
+        #Go through every data point find the k closest X values  and grab te Y value
         yOnly = [x[0][1] for x in findClosestInX(xval, k, trainingSet)]
-        cords.append((xval , sum(yOnly) / k))
+        cords.append((xval , sum(yOnly) / k)) #take avrage Y value
 
     x_val = [x[0] for x in cords]
     y_val = [x[1] for x in cords]    
@@ -78,7 +81,6 @@ def mseCompute(regLineCords, cordsSet = trainingSet):
     diffInY = []
     for point in cordsSet: #för alla points i set
         diffInY.append(findClosestInX(point[0],1,regLineCords)[0][0][1]-point[1]) #Hitta den närmaste i X led
-        
     res = 0
     for x in diffInY: #Square and sum all values
         res += pow(x, 2)
@@ -92,6 +94,4 @@ for plot,k in [(k1plt,1),(k3plt,2),(k5plt,5),(k7plt,7),(k9plt,9),(k11plt,11)]:
     regCords = plotRegression(plot,k)
     plot.set_title(f'K = {k} MSE training error: {mseCompute(regCords)} MSE test error: {mseCompute(regCords,testSet)}')
 
-
-#TODO check to answers are reasonable
 plt.show()
