@@ -8,13 +8,12 @@ import pandas as pd
 
 # By: André Franzén (af223kr)
 # Course: 2DV516
-# Date: Mars 2022 
+# Date: Mars&april 2022 
 # Alot of sources are used as this task was complicated.
 # They are mentioned in the code
 #Additional sources:
-# https://benmilanko.com/projects/mnist_with_pca/
-# https://www.analyticsvidhya.com/blog/2021/11/pca-on-mnist-dataset/
-# https://www.codingninjas.com/codestudio/library/applying-pca-on-mnist-dataset
+# https://www.kaggle.com/code/fergusmclellan/digit-recognition-using-python-knn-from-scratch/notebook
+
 
 
 mndata = MNIST('samples/')
