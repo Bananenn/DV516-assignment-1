@@ -1,5 +1,6 @@
 from math import sqrt
 import random
+from re import T
 from mnist import MNIST # This only helps with reading the files weirdidx3-ubyte
 import matplotlib.pyplot as plt
 import numpy as np
@@ -23,10 +24,9 @@ t = np.array(images)
 l = np.array(labels)
 
 # Lets just use the 1000 first
-numtrain = 50000
+numtrain = 20000
 train = t[:numtrain]
 lable = l[:numtrain]
-
 
 def markOnPlot():
     lable = l[:numtrain]
@@ -35,7 +35,6 @@ def markOnPlot():
     # Meaned should help when calculating the covariance matrix (according to guide :) )
     pixels_Meaned = train - np.mean(train, axis=0)
     
-
     # Calculating the covariance matrix of meaned centered data TODO What does this do? I have no clue
     cov_mat = np.cov(pixels_Meaned, rowvar=False)
 
@@ -49,20 +48,28 @@ def markOnPlot():
 
     newCordinates = np.matmul(eigenVector_subset, pixels_Meaned.T)
     newCordinates = np.vstack( (newCordinates, lable) ).T
+    
     for x,y,lable in newCordinates:
         if lable == 0:
-        
-            plt.plot(x,y, 'bx')
+            plt.plot(x,y, 'b.')
+        elif lable == 1:
+            plt.plot(x,y, 'g.')
         elif lable == 2:
-            plt.plot(x,y, 'go')
-        elif lable == 3:
             plt.plot(x,y, 'r.')
+        elif lable == 3:
+            plt.plot(x,y, 'c.')
         elif lable == 4:
-            plt.plot(x,y, 'c*')
+            plt.plot(x,y, 'm.')
         elif lable == 5:
-            plt.plot(x,y, 'm^')
+            plt.plot(x,y, 'y.')
         elif lable == 6:
-            plt.plot(x,y, 'ys')
+            plt.plot(x,y, color='gray',marker='.')
+        elif lable == 7:
+            plt.plot(x,y, color='peru',marker='.')
+        elif lable == 8:
+            plt.plot(x,y, color='seagreen',marker='.')
+        elif lable == 9:
+            plt.plot(x,y, color='hotpink',marker='.')
         
         
     
@@ -71,18 +78,14 @@ def markOnPlot():
 points, egenVec = markOnPlot()
 
 def getRelCords(input):
-
     newCordinates = np.matmul(egenVec, input.T).T
-
     return  newCordinates
 
 
 newp = []
-for i in range(7000):
+for i in range(numtrain):
     temp = getRelCords(t[i])
     newp.append((temp[0], temp[1], l[i]))
-
-
 
 def predictValue(z,k):
     distanceList = []
@@ -142,6 +145,7 @@ def makeboundryPlot(k):
 fig, ([p1, p2], [p3,p4], [p5,p6]) = plt.subplots(3, 2)
 fig.suptitle('perdict values')
 
+"""
 for plot in [p1,p2,p3,p4,p5,p6]:
     rand = random.randint(0,5000)
     img = train[rand]
@@ -149,23 +153,21 @@ for plot in [p1,p2,p3,p4,p5,p6]:
     # Source: https://stackoverflow.com/questions/37228371/visualize-mnist-dataset-using-opencv-or-matplotlib-pyplot
     pixels = np.array(img)
     pixels = pixels.reshape(28,28)
+    print(pixels)
     plot.set_title(f"This is: {predictValue(getRelCords(img),3)}")
     plot.imshow(pixels, cmap='gray_r')
 
 plt.show()
 
-"""
-index = 50000
-correct = 0
-while index < 50100:
-    predicval = predictValue(getRelCords(t[index]),3)
-    realVal = l[index]
-    print(f"{predicval} And the real is {realVal}")
-    if predicval == realVal:
-        correct += 1
-    index += 1
 
-print(correct)
-"""
+currect = 0
+for i in range(50000,50100):
+    #Perdicted valye
+    p = predictValue(getRelCords(t[i]),3)
+    real = l[i]
+    if p == real:
+        currect +=1
 
-#plt.show()
+print(currect)
+
+"""
