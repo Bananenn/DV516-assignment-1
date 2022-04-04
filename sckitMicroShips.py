@@ -1,3 +1,4 @@
+from matplotlib.colors import ListedColormap
 from matplotlib.patches import Rectangle
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,6 +8,7 @@ from sklearn import metrics
 
 # Sources:
 # https://towardsdatascience.com/knn-using-scikit-learn-c6bed765be75
+# https://scikit-learn.org/stable/auto_examples/neighbors/plot_classification.html
 
 # -- 2x2 plot
 fig, ([k1plt, k3plt], [k5plt, k7plt]) = plt.subplots(2,2)
@@ -24,17 +26,14 @@ points = []
 for index, row in chips.iterrows():
     points.append((row[0], row[1], row[2]))
 
-pointsTrain = points[:100]
-pointsTest = points[100:]
-
-x_val = [ (x[0],x[1]) for x in pointsTrain]
-y_val = [x[2] for x in pointsTrain] 
-
-pointsTest = [ (x[0],x[1]) for x in pointsTest]
+x_val = [ (x[0],x[1]) for x in points]
+y_val = [x[2] for x in points] 
 
 #This creates the class? and sets K to 3
 knn = KNeighborsClassifier(n_neighbors=3)
 knn.fit( x_val, y_val ) #Here the trinaind data is input
+
+stepSize = 0.024 # want 100 steps 2.4/100 = 0.024
 
 # - A funcion that takes a point (x,y) and perdicts the outcome
 def perdictPoint(toTest):
@@ -43,10 +42,6 @@ def perdictPoint(toTest):
 
 def perdictMany(toTest):
     return np.reshape(knn.predict( toTest ), (1,-1)) 
-
-stepSize = 0.024 # want 100 steps 2.4/100 = 0.024
-xRange = np.arange(-1.0, 1.4, stepSize)
-yRange = np.arange(-1.0, 1.4, stepSize)
 
 def improvedPerdictionBoundry(plot):
     allXYCords = []
@@ -66,7 +61,6 @@ def improvedPerdictionBoundry(plot):
             rec = plt.Rectangle((x,y), stepSize, stepSize, fc='red', alpha=0.5)
             plot.add_patch(rec) #Thease are semi transparant rectangels
     
-
 def makePerdictionBoundry(plot):
     # X and Y ranges from -1 to 1.4 found to be good size
     stepSize = 0.024 # want 100 steps 2.4/100 = 0.024
@@ -84,11 +78,30 @@ def makePerdictionBoundry(plot):
                 rec = plt.Rectangle((x,y), stepSize, stepSize, fc='red', alpha=0.5)
                 plot.add_patch(rec) #Thease are semi transparant rectangels
 
+
+def makePerdictionBoundryMesh(plot):
+    #Insperation from https://scikit-learn.org/stable/auto_examples/neighbors/plot_classification.html
+    # Create color maps
+    cmap_light = ListedColormap(["orange", "cyan", "cornflowerblue"])
+    cmap_bold = ["darkorange", "c", "darkblue"]
+
+    # Plot the decision boundary. For that, we will assign a color to each
+    # point in the mesh [x_min, x_max]x[y_min, y_max].
+    xx, yy = np.meshgrid(np.arange(-1, 1, stepSize), np.arange(-1, 1, stepSize))
+    Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
+
+    # Put the result into a color plot
+    Z = Z.reshape(xx.shape)
+    plot.contourf(xx, yy, Z, cmap=cmap_light)
+
+
 #15s
 #makePerdictionBoundry(k3plt)
 
 #10s
-improvedPerdictionBoundry(k3plt)
+#improvedPerdictionBoundry(k3plt)
+
+makePerdictionBoundryMesh(k3plt)
 
 k3plt.plot(-1,-1)#TO show full plot for some reason wont show negative otherwise
 #makePerdictionBoundry(k3plt)
