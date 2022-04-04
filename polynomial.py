@@ -58,7 +58,7 @@ def findClosestInX(xval, k, set):
             tempList.append(point) #Append Y value
     return tempList
 
-stepSize = 0.05
+stepSize = 0.1
 xRange = np.arange(0, 25, stepSize)
 # For each value in xRange take the k datapoint closest and compute Y value 
 def plotRegression(plot, k):

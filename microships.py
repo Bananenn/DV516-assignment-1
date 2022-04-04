@@ -96,4 +96,3 @@ for plot,k in plots:
     plot.set_title(f'K = {k}, Training errors = {checkErrors(k)}')
 
 plt.show()
-#Tar ca 10s
