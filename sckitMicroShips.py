@@ -36,11 +36,13 @@ knn.fit( x_val, y_val ) #Here the trinaind data is input
 stepSize = 0.024 # want 100 steps 2.4/100 = 0.024
 
 # - A funcion that takes a point (x,y) and perdicts the outcome
-def perdictPoint(toTest):
+def perdictPoint(toTest, k):
+    knn.n_neighbors = k
     toTest = np.reshape(np.array(toTest), (1,-1))
     return knn.predict( toTest )[0]
 
-def perdictMany(toTest):
+def perdictMany(toTest, k):
+    knn.n_neighbors = k
     return np.reshape(knn.predict( toTest ), (1,-1)) 
 
 def improvedPerdictionBoundry(plot):
@@ -78,22 +80,33 @@ def makePerdictionBoundry(plot):
                 rec = plt.Rectangle((x,y), stepSize, stepSize, fc='red', alpha=0.5)
                 plot.add_patch(rec) #Thease are semi transparant rectangels
 
+def plotOrgData(plot):
+    for cords,ok in zip(x_val, y_val):
+        if ok == 1:
+            plot.plot(cords[0],cords[1],'r.')
+        else:
+            plot.plot(cords[0],cords[1],'b.')
 
-def makePerdictionBoundryMesh(plot):
+def makePerdictionBoundryMesh(plot, k):
+    knn.n_neighbors = k
     #Insperation from https://scikit-learn.org/stable/auto_examples/neighbors/plot_classification.html
     # Create color maps
-    cmap_light = ListedColormap(["orange", "cyan", "cornflowerblue"])
-    cmap_bold = ["darkorange", "c", "darkblue"]
+    cmap_light = ListedColormap(["blue", "red"])
 
     # Plot the decision boundary. For that, we will assign a color to each
-    # point in the mesh [x_min, x_max]x[y_min, y_max].
-    xx, yy = np.meshgrid(np.arange(-1, 1, stepSize), np.arange(-1, 1, stepSize))
+    xx, yy = np.meshgrid(np.arange(-1, 1.4, stepSize), np.arange(-1, 1.4, stepSize))
     Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
 
     # Put the result into a color plot
     Z = Z.reshape(xx.shape)
-    plot.contourf(xx, yy, Z, cmap=cmap_light)
+    plot.contourf(xx, yy, Z, alpha=0.7, cmap=cmap_light)
 
+def checkTrainingError(k):
+    errors = 0
+    for x,y,ok in points:
+        if perdictPoint((x,y),k) != ok: 
+            errors +=1
+    return errors
 
 #15s
 #makePerdictionBoundry(k3plt)
@@ -101,9 +114,13 @@ def makePerdictionBoundryMesh(plot):
 #10s
 #improvedPerdictionBoundry(k3plt)
 
-makePerdictionBoundryMesh(k3plt)
+#Mesh print perdicton
+for plot,k in plots:
+    plotOrgData(plot)
+    makePerdictionBoundryMesh(plot,k)
+    plot.set_title(f'K = {k} Training error: {checkTrainingError(k)}')
+    
 
-k3plt.plot(-1,-1)#TO show full plot for some reason wont show negative otherwise
-#makePerdictionBoundry(k3plt)
+
 
 plt.show()

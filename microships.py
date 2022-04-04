@@ -88,9 +88,9 @@ def makeboundryPlot(plot,k):
                 plot.add_patch(plt.Rectangle((x,y), stepSize, stepSize, fc='blue', alpha=0.5))
 
 makeboundryPlot(k1plt,1)
-makeboundryPlot(k3plt,3)
-makeboundryPlot(k5plt,5)
-makeboundryPlot(k7plt,5)
+#makeboundryPlot(k3plt,3)
+#makeboundryPlot(k5plt,5)
+#makeboundryPlot(k7plt,7)
 
 # -- Now compute the errors
 # Go to all dots we know and see if they are in correct are area
