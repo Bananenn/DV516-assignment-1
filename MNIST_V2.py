@@ -16,7 +16,7 @@ import pandas as pd
 # https://www.analyticsvidhya.com/blog/2021/11/pca-on-mnist-dataset/
 # https://www.codingninjas.com/codestudio/library/applying-pca-on-mnist-dataset
 
-# -- The below (How to plot the thing) was learnt from https://benmilanko.com/projects/mnist_with_pca/
+
 mndata = MNIST('samples/')
 images, labels = mndata.load_training()
 
@@ -25,29 +25,25 @@ d = np.array(images)
 l = np.array(labels)
 
 # seperate training data
-numtrain = 10
+numtrain = 10000
 DataTrain = d[:numtrain]
 lableTrain = l[:numtrain]
 
 #TODO test print for img
+# -- The below (How to plot the figures) was learnt from https://benmilanko.com/projects/mnist_with_pca/
 fig, ([p1, p2], [p3,p4], [p5,p6]) = plt.subplots(3, 2)
 for plot in [p1,p2,p3,p4,p5,p6]:
     pixels = DataTrain[5]
     pixels = pixels.reshape((28,28))
     plot.imshow(pixels, cmap='gray_r')
 
-#plt.show()
-
 k = 3
 def predictValue(y):
     distanceList = []
     for train, lable in zip(DataTrain, lableTrain):
         train = train.reshape((28,28))
-        print("Train shape: ",train.shape) #TODO temp
-        print("Lable: ",lable)        #TODO temp
         dis = np.linalg.norm(train-y)
         distanceList.append((lable,dis))
-        print("disList: ", distanceList)
 
     # -- Sort the list in accending order 
     distanceList.sort(key=lambda tup: tup[1])
@@ -63,5 +59,12 @@ def predictValue(y):
     # - The row below to get the most common value is from https://www.geeksforgeeks.org/python-find-most-frequent-element-in-a-list/
     return(max(set(tempList), key = tempList.count))
 
-for i in [20,30,40,50]:
-    print(f"Value is: {l[i]} And the perdicted is {predictValue(d[i].reshape((28,28)))}") 
+correct = 0
+for i in range(100):
+    r = random.randint(10000, 50000)
+    pred_val = predictValue(d[r].reshape((28,28)))
+    print(f"Value is: {l[r]} And the perdicted is {pred_val}") 
+    if l[r] == pred_val:
+        correct += 1
+
+print(correct)
