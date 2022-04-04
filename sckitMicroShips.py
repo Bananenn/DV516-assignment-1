@@ -54,6 +54,8 @@ def makePerdictionBoundryMesh(plot, k):
 
     # Plot the decision boundary. For that, we will assign a color to each
     xx, yy = np.meshgrid(np.arange(-1, 1.4, stepSize), np.arange(-1, 1.4, stepSize))
+    temp = np.c_[xx.ravel(), yy.ravel()]
+    
     Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
 
     # Put the result into a color plot

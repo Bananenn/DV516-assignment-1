@@ -1,4 +1,5 @@
 from math import sqrt
+from matplotlib.colors import ListedColormap
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,6 +12,7 @@ import numpy as np
 fig, ([k1plt, k3plt], [k5plt, k7plt]) = plt.subplots(2,2)
 fig.suptitle('Plots showing K-NN')
 
+plots = [(k1plt,1), (k3plt,3), (k5plt,5), (k7plt,7)]
 
 # -- (1) Load the data
 PATH = "csvFiles/microchips.csv"
@@ -20,6 +22,8 @@ chips = pd.read_csv(PATH)
 points = []
 for index, row in chips.iterrows():
     points.append((row[0], row[1], row[2]))
+
+x_val = np.array([ (x[0],x[1]) for x in points])
 
 # -- (2) initialize the value of K
 klst = [1,3,5,7]
@@ -39,10 +43,31 @@ for x,y,ok in points:
         k3plt.plot(x, y, 'b.')
         k5plt.plot(x, y, 'b.')
         k7plt.plot(x, y, 'b.')
-    
 
+def eucDistance(X):
+    #From lecture https://github.com/rafaelmessias/2dv516/blob/master/2dv516-python-2-part-1-broadcasting.ipynb
+    # But modefied by me
+    n = X.shape[0]
+    Z = np.empty((n, n))
+    for i in range(n):        
+        Z[i] = np.sqrt(np.sum((X[i] - X)**2, axis=-1))
+    
+    #Where Z[1][5] is distance from point 1 to 5
+    return Z
+
+stepSize = 0.2
+def boundry():
+    
+    xx, yy = np.meshgrid(np.arange(-1, 1.4, stepSize), np.arange(-1, 1.4, stepSize))
+    #A list with all XY cords for entire mesh
+    formatedXYList = np.c_[xx.ravel(), yy.ravel()]
+
+    d_matrix = eucDistance(formatedXYList)
+    print(d_matrix.shape)
+    
 #Peredict value function based on KNN
 def predictValue(z,k):
+    #d_matrix such that d_matrix[10][15] for example, contains the distance between rows 10 and 15 from the original dataset x_val.
     distanceList = []
     for x,y,ok in points:
         #d=√((x_2-x_1)²+(y_2-y_1)²)
@@ -71,26 +96,21 @@ def perdictForPredefPoints():
             print(f"{predictValue(point, k)} is the predicted value with K = {k}")
 
 #perdictForPredefPoints()
-
 def makeboundryPlot(plot,k):
     # X and Y ranges from -1 to 1.4 found to be good size
     stepSize = 0.024 # want 100 steps 2.4/100 = 0.024
-    xRange = np.arange(-1.0, 1.4, stepSize)
-    yRange = np.arange(-1.0, 1.4, stepSize)
+    xx, yy = np.meshgrid(np.arange(-1, 1.4, stepSize), np.arange(-1, 1.4, stepSize))
+    #A list with all XY cords for entire mesh
+    formatedXYList = np.c_[xx.ravel(), yy.ravel()]
+    cmap_light = ListedColormap(["blue", "red"])
+    Z = []
+    for x,y in formatedXYList:
+        Z.append(predictValue((x,y),k))
+    Z = np.array(Z)    
 
-    for x in xRange:
-        progress = round(((1+x)/2.4)*100)
-        if (progress % 10) == 0: print(f"Progress: {progress}%") #Simple progress meter will pring every 10% of progress
-        for y in yRange:
-            if predictValue((x-stepSize/2,y-stepSize/2),k) == 0:
-                plot.add_patch(plt.Rectangle((x,y), stepSize, stepSize, fc='red', alpha=0.5)) #Thease are semi transparant rectangels
-            else:
-                plot.add_patch(plt.Rectangle((x,y), stepSize, stepSize, fc='blue', alpha=0.5))
-
-makeboundryPlot(k1plt,1)
-#makeboundryPlot(k3plt,3)
-#makeboundryPlot(k5plt,5)
-#makeboundryPlot(k7plt,7)
+    # Put the result into a color plot
+    Z = Z.reshape(xx.shape)
+    plot.contourf(xx, yy, Z, alpha=0.7, cmap=cmap_light)
 
 # -- Now compute the errors
 # Go to all dots we know and see if they are in correct are area
@@ -101,9 +121,8 @@ def checkErrors(k):
             errors +=1
     return errors
 
-k1plt.set_title(f'K = 1, Training errors = {checkErrors(1)}')
-k3plt.set_title(f'K = 3, Training errors = {checkErrors(3)}')
-k5plt.set_title(f'K = 5, Training errors = {checkErrors(5)}')
-k7plt.set_title(f'K = 5, Training errors = {checkErrors(7)}')
+for plot,k in plots:
+    makeboundryPlot(plot, k)
+    plot.set_title(f'K = {k}, Training errors = {checkErrors(k)}')
 
 plt.show()
