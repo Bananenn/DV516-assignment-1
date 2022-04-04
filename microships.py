@@ -8,12 +8,6 @@ import numpy as np
 # Course: 2DV516
 # Date: Mars 2022 
 
-# -- 2x2 plot
-fig, ([k1plt, k3plt], [k5plt, k7plt]) = plt.subplots(2,2)
-fig.suptitle('Plots showing K-NN')
-
-plots = [(k1plt,1), (k3plt,3), (k5plt,5), (k7plt,7)]
-
 # -- (1) Load the data
 PATH = "csvFiles/microchips.csv"
 chips = pd.read_csv(PATH)
@@ -25,45 +19,18 @@ for index, row in chips.iterrows():
 
 x_val = np.array([ (x[0],x[1]) for x in points])
 
-# -- (2) initialize the value of K
-klst = [1,3,5,7]
+# -- 2x2 plot
+fig, ([k1plt, k3plt], [k5plt, k7plt]) = plt.subplots(2,2)
+fig.suptitle('Plots showing K-NN')
 
-# -- (3) Assume we want to classify a datapoint Z
-zlst = [(-0.3, 1.0), (-0.5, -0.1), (0.6, 0.0)]
-
-# - Print all points to make the plot make sense
-for x,y,ok in points:
-    if ok == 0:
-        k1plt.plot(x, y, 'r.')
-        k3plt.plot(x, y, 'r.')
-        k5plt.plot(x, y, 'r.')
-        k7plt.plot(x, y, 'r.')
-    else:
-        k1plt.plot(x, y, 'b.')
-        k3plt.plot(x, y, 'b.')
-        k5plt.plot(x, y, 'b.')
-        k7plt.plot(x, y, 'b.')
-
-def eucDistance(X):
-    #From lecture https://github.com/rafaelmessias/2dv516/blob/master/2dv516-python-2-part-1-broadcasting.ipynb
-    # But modefied by me
-    n = X.shape[0]
-    Z = np.empty((n, n))
-    for i in range(n):        
-        Z[i] = np.sqrt(np.sum((X[i] - X)**2, axis=-1))
-    
-    #Where Z[1][5] is distance from point 1 to 5
-    return Z
-
-stepSize = 0.2
-def boundry():
-    
-    xx, yy = np.meshgrid(np.arange(-1, 1.4, stepSize), np.arange(-1, 1.4, stepSize))
-    #A list with all XY cords for entire mesh
-    formatedXYList = np.c_[xx.ravel(), yy.ravel()]
-
-    d_matrix = eucDistance(formatedXYList)
-    print(d_matrix.shape)
+plots = [(k1plt,1), (k3plt,3), (k5plt,5), (k7plt,7)]
+        
+def plotOrgData(plot):
+    for x,y,ok in points:
+        if ok == 0:
+            plot.plot(x, y, 'r.')
+        else:
+            plot.plot(x, y, 'b.')
     
 #Peredict value function based on KNN
 def predictValue(z,k):
@@ -90,6 +57,8 @@ def predictValue(z,k):
 
 # -- Task 1.2 Perdicton of predefined points
 def perdictForPredefPoints():
+    klst = [1,3,5,7]
+    zlst = [(-0.3, 1.0), (-0.5, -0.1), (0.6, 0.0)]
     for point in zlst:
         print(f"Point: {point}")
         for k in klst:
@@ -110,7 +79,7 @@ def makeboundryPlot(plot,k):
 
     # Put the result into a color plot
     Z = Z.reshape(xx.shape)
-    plot.contourf(xx, yy, Z, alpha=0.7, cmap=cmap_light)
+    plot.contourf(xx, yy, Z, alpha=0.5, cmap=cmap_light)
 
 # -- Now compute the errors
 # Go to all dots we know and see if they are in correct are area
@@ -122,7 +91,9 @@ def checkErrors(k):
     return errors
 
 for plot,k in plots:
+    plotOrgData(plot)
     makeboundryPlot(plot, k)
     plot.set_title(f'K = {k}, Training errors = {checkErrors(k)}')
 
 plt.show()
+#Tar ca 10s
