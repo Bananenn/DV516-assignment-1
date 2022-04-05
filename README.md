@@ -26,6 +26,7 @@ I want to great lengths to try to understand and how to use distance matricas an
 
 ### Result 
 ![img not found](Pictures/task1.png)
+Time to complete (on my pc) 6.5s to compute above image
 
 <br>
 
@@ -43,6 +44,7 @@ Note! the MSE should in theroy be 0 for the one with K = 1 but due to the dots b
 
 ### Result 
 ![img not found](Pictures/Task2.png)
+Time to complete (on my pc) 6s to compute above image
 
 # Task 3 - VG
 File name ``MNIST_V2.py``
@@ -60,3 +62,4 @@ Run the python file ``sckitMicroShips.py``
 I am happy with my implementation was fun to see how much easier it was with the library
 ### Results
 ![img not found](Pictures/Task4.png)
+Time to complete (on my pc) 3s to compute above image
