@@ -25,7 +25,7 @@ for x,y,ok in points:
 I want to great lengths to try to understand and how to use distance matricas and there for be able to use brodcast but i did not suceed.
 
 ### Result 
-![img not found](Pictures/Task1.png)
+![img not found](Pictures/task1.png)
 
 <br>
 
