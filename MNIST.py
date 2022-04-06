@@ -145,6 +145,8 @@ def makeboundryPlot(k):
 fig, ([p1, p2], [p3,p4], [p5,p6]) = plt.subplots(3, 2)
 fig.suptitle('perdict values')
 
+plt.show()
+
 """
 for plot in [p1,p2,p3,p4,p5,p6]:
     rand = random.randint(0,5000)

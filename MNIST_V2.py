@@ -15,26 +15,18 @@ import pandas as pd
 # https://www.kaggle.com/code/fergusmclellan/digit-recognition-using-python-knn-from-scratch/notebook
 
 
-
+# Load data
 mndata = MNIST('samples/')
 images, labels = mndata.load_training()
-
-# All the data
-d = np.array(images)
-l = np.array(labels)
+imagesTEST, labelsTEST = mndata.load_testing()
 
 # seperate training data
-numtrain = 10000
-DataTrain = d[:numtrain]
-lableTrain = l[:numtrain]
+imagesTEST = np.array(imagesTEST)
+labelsTEST = np.array(labelsTEST)
 
-#TODO test print for img
-# -- The below (How to plot the figures) was learnt from https://benmilanko.com/projects/mnist_with_pca/
-fig, ([p1, p2], [p3,p4], [p5,p6]) = plt.subplots(3, 2)
-for plot in [p1,p2,p3,p4,p5,p6]:
-    pixels = DataTrain[5]
-    pixels = pixels.reshape((28,28))
-    plot.imshow(pixels, cmap='gray_r')
+numtrain = 30000
+DataTrain = np.array(images)[:numtrain]
+lableTrain = np.array(labels)[:numtrain]
 
 k = 3
 def predictValue(y):
@@ -58,12 +50,23 @@ def predictValue(y):
     # - The row below to get the most common value is from https://www.geeksforgeeks.org/python-find-most-frequent-element-in-a-list/
     return(max(set(tempList), key = tempList.count))
 
+# -- The below (How to plot the figures) was learnt from https://benmilanko.com/projects/mnist_with_pca/
+fig, ([p1, p2], [p3,p4], [p5,p6]) = plt.subplots(3, 2)
+for plot in [p1,p2,p3,p4,p5,p6]:
+    r = random.randint(0,10000)
+    img = imagesTEST[r]
+    img = img.reshape((28,28))
+    plot.imshow(img, cmap='gray_r')
+    plot.set_title(f"Predicted value: {predictValue(img)} Lable: {labelsTEST[r]}")
+
+
 correct = 0
 for i in range(100):
-    r = random.randint(10000, 50000)
-    pred_val = predictValue(d[r].reshape((28,28)))
-    print(f"Value is: {l[r]} And the perdicted is {pred_val}") 
-    if l[r] == pred_val:
+    r = random.randint(0, 10000)
+    pred_val = predictValue(imagesTEST[r].reshape((28,28)))
+    #print(f"Value is: {l[r]} And the perdicted is {pred_val}") 
+    if labelsTEST[r] == pred_val:
         correct += 1
 
 print(correct)
+plt.show()

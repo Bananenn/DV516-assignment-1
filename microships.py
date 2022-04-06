@@ -39,7 +39,7 @@ def predictValue(z,k):
     for x,y,ok in points:
         #d=√((x_2-x_1)²+(y_2-y_1)²)
         dis = sqrt( pow((z[0] - x),2) + pow((z[1] - y),2) )
-        distanceList.append( ((x, y, ok),dis) )
+        distanceList.append( (ok,dis) )
 
     # -- Sort the list in accending order 
     distanceList.sort(key=lambda tup: tup[1])
@@ -49,7 +49,7 @@ def predictValue(z,k):
     tempList = []
     for item in distanceList[:k]:
         #item[0] to select the point and not distance [2] to select 3rd element that is Ok / not ok
-        tempList.append(item[0][2])
+        tempList.append(item[0])
 
     # -- Get most common from the now k long list
     # - The row below to get the most common value is from https://www.geeksforgeeks.org/python-find-most-frequent-element-in-a-list/
